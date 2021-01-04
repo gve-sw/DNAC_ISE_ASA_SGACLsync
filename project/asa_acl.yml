@@ -1,0 +1,17 @@
+---
+- name: apply SGACL as ACL to ASA
+  hosts: asa
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: config ACL
+      asa_acl:
+        lines:
+          - "{{  item  }}"
+      loop: "{{  acl_entries  }}"
+    
+    - name: apply ACL to int
+      asa_config:
+        lines:
+          - access-group {{  acl_name  }} in interface {{  int_nameif  }}
